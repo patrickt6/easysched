@@ -5,6 +5,8 @@ import { useMemo, useState } from 'react'
 import CreateSchedule from './components/CreateSchedule'
 import JoinSchedule from './components/JoinSchedule'
 import ScheduleView from './components/ScheduleView'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
@@ -78,20 +80,31 @@ function App() {
       <Router>
         <Box
           sx={{
-            minHeight: '100vh',
             display: 'flex',
             flexDirection: 'column',
-            p: { xs: 2, sm: 3 },
-            maxWidth: '100%',
-            boxSizing: 'border-box',
-            overflow: 'hidden'
+            minHeight: '100vh',
           }}
         >
-          <Routes>
-            <Route path="/" element={<JoinSchedule />} />
-            <Route path="/create" element={<CreateSchedule />} />
-            <Route path="/schedule/:id" element={<ScheduleView />} />
-          </Routes>
+          <Header />
+          <Box
+            component="main"
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              p: { xs: 2, sm: 3 },
+              maxWidth: '100%',
+              boxSizing: 'border-box',
+              overflow: 'hidden'
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<JoinSchedule />} />
+              <Route path="/create" element={<CreateSchedule />} />
+              <Route path="/schedule/:id" element={<ScheduleView />} />
+            </Routes>
+          </Box>
+          <Footer />
         </Box>
       </Router>
     </ThemeProvider>

@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { CustomDateAdapter } from '../utils/dateAdapter'
 import { ChevronLeft as BackIcon } from '@mui/icons-material'
 import { db } from '../firebase'
 import { collection, addDoc } from 'firebase/firestore'
@@ -117,7 +117,7 @@ function CreateSchedule() {
       case 1:
         return scheduleType === 'custom' ? (
           <Stack spacing={3}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={CustomDateAdapter}>
               <DatePicker
                 label="Start Date"
                 value={startDate}
