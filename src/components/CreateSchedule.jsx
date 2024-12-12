@@ -18,11 +18,10 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import addDays from 'date-fns/addDays'
-import addMonths from 'date-fns/addMonths'
 import { ChevronLeft as BackIcon } from '@mui/icons-material'
 import { db } from '../firebase'
 import { collection, addDoc } from 'firebase/firestore'
+import { addDays, addMonths } from '../utils/dateUtils'
 
 const steps = ['Schedule Type', 'Details', 'Confirmation']
 

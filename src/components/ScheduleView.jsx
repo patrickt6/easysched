@@ -27,9 +27,7 @@ import {
 } from '@mui/icons-material'
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase'
-import format from 'date-fns/format'
-import parseISO from 'date-fns/parseISO'
-import isSameDay from 'date-fns/isSameDay'
+import { formatDate, formatFullDate, formatShortDate, isSameDay, parseISO } from '../utils/dateUtils'
 
 function ScheduleView() {
   const { id } = useParams()
@@ -103,7 +101,7 @@ function ScheduleView() {
   }
 
   const renderTimeSlot = (time, date) => {
-    const slotKey = `${format(date, 'yyyy-MM-dd')}_${time}`
+    const slotKey = `${formatShortDate(date)}_${time}`
     const availability = schedule.availability[slotKey] || {}
     const isAvailable = availability[userName]
     const totalAvailable = Object.entries(availability).filter(([, value]) => value).length
@@ -169,7 +167,7 @@ function ScheduleView() {
             <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
               <CalendarIcon color="primary" />
               <Typography variant="h6">
-                {format(selectedDate, 'EEEE, MMMM d')}
+                {formatFullDate(selectedDate)}
               </Typography>
             </Stack>
             <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', pb: 1 }}>
@@ -190,7 +188,7 @@ function ScheduleView() {
                       }}
                     >
                       <Typography variant="body2">
-                        {format(date, 'd')}
+                        {formatShortDate(date)}
                       </Typography>
                     </Button>
                   )
@@ -229,7 +227,7 @@ function ScheduleView() {
             <ListItem>
               <ListItemText
                 primary="Duration"
-                secondary={`${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d')}`}
+                secondary={`${formatFullDate(startDate)} - ${formatFullDate(endDate)}`}
               />
             </ListItem>
             {schedule.description && (
