@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     commonjs({
       include: /node_modules/,
+      requireReturnsDefault: 'auto'
     }),
     react()
   ],
@@ -15,7 +16,13 @@ export default defineConfig({
       '@mui/styled-engine': '@mui/styled-engine-sc'
     }
   },
-  optimizeDeps: {
-    include: ['date-fns']
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'date-fns': ['date-fns/format', 'date-fns/parseISO', 'date-fns/isSameDay', 'date-fns/addDays', 'date-fns/addMonths']
+        }
+      }
+    }
   }
 })

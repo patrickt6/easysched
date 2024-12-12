@@ -27,7 +27,9 @@ import {
 } from '@mui/icons-material'
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase'
-import { format, parseISO, isSameDay } from 'date-fns'
+import format from 'date-fns/format'
+import parseISO from 'date-fns/parseISO'
+import isSameDay from 'date-fns/isSameDay'
 
 function ScheduleView() {
   const { id } = useParams()
