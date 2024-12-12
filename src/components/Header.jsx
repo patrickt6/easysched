@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { AppBar, Toolbar, Stack, Typography } from '@mui/material'
+import { AppBar, Toolbar, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom'
-import ExitConfirmDialog from './ExitConfirmDialog'
 
 function Header() {
   const navigate = useNavigate()
@@ -9,12 +8,11 @@ function Header() {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const handleLogoClick = () => {
-    if (location.pathname !== '/') {
-      setDialogOpen(true)
-    }
+    if (location.pathname === '/') return
+    setDialogOpen(true)
   }
 
-  const handleConfirmExit = () => {
+  const handleConfirmNavigation = () => {
     setDialogOpen(false)
     navigate('/')
   }
@@ -58,7 +56,7 @@ function Header() {
               whosbusy
             </Typography>
             <img
-              src="/logos/icon-logo.png"
+              src="/assets/logos/whosbusyiconlogo.png"
               alt="WhosBusy Icon"
               style={{ height: '24px' }}
             />
@@ -66,11 +64,26 @@ function Header() {
         </Toolbar>
       </AppBar>
 
-      <ExitConfirmDialog
+      <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onConfirm={handleConfirmExit}
-      />
+        aria-labelledby="alert-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Return to Home Page?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to return to the home page? Any unsaved changes will be lost.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleConfirmNavigation} autoFocus>
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

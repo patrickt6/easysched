@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Typography, Stack, Link } from '@mui/material'
+import { Box, Typography, Stack, Link, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useNavigate, useLocation } from 'react-router-dom'
 import ExitConfirmDialog from './ExitConfirmDialog'
@@ -12,12 +12,11 @@ function Footer() {
   const currentYear = new Date().getFullYear()
 
   const handleLogoClick = () => {
-    if (location.pathname !== '/') {
-      setDialogOpen(true)
-    }
+    if (location.pathname === '/') return
+    setDialogOpen(true)
   }
 
-  const handleConfirmExit = () => {
+  const handleConfirmNavigation = () => {
     setDialogOpen(false)
     navigate('/')
   }
@@ -67,7 +66,7 @@ function Footer() {
               whosbusy
             </Typography>
             <img
-              src="/logos/icon-logo.png"
+              src="/assets/logos/whosbusyiconlogo.png"
               alt="WhosBusy Icon"
               style={{ height: '16px' }}
             />
@@ -87,10 +86,31 @@ function Footer() {
         </Stack>
       </Box>
 
-      <ExitConfirmDialog
+      <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onConfirm={handleConfirmExit}
+        aria-labelledby="alert-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Return to Home Page?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to return to the home page? Any unsaved changes will be lost.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleConfirmNavigation} autoFocus>
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <ExitConfirmDialog
+        open={false}
+        onClose={() => {}}
+        onConfirm={() => {}}
       />
     </>
   )
