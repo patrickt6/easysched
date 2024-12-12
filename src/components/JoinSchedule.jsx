@@ -1,120 +1,157 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Stack from '@mui/material/Stack'
-import Alert from '@mui/material/Alert'
-import Snackbar from '@mui/material/Snackbar'
-import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { db } from '../firebase'
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  TextField,
+  Stack,
+  useTheme,
+  Fade,
+} from '@mui/material'
+import { Add as CreateIcon, Login as JoinIcon } from '@mui/icons-material'
 
 function JoinSchedule() {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const [toast, setToast] = useState({ open: false, message: '', severity: 'success' })
-  const [pin, setPin] = useState('')
+  const theme = useTheme()
   const [name, setName] = useState('')
+  const [scheduleId, setScheduleId] = useState('')
+  const [showJoinForm, setShowJoinForm] = useState(false)
 
-  const handleSubmit = async (e) => {
+  const handleCreateClick = () => {
+    navigate('/create')
+  }
+
+  const handleJoinClick = () => {
+    setShowJoinForm(true)
+  }
+
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
-
-    try {
-      const q = query(collection(db, 'schedules'), where('pin', '==', pin))
-      const querySnapshot = await getDocs(q)
-
-      if (querySnapshot.empty) {
-        setToast({
-          open: true,
-          message: 'Invalid PIN. Please check and try again.',
-          severity: 'error'
-        })
-        return
-      }
-
-      const scheduleDoc = querySnapshot.docs[0]
-      navigate(`/schedule/${scheduleDoc.id}?name=${encodeURIComponent(name)}`)
-    } catch (error) {
-      setToast({
-        open: true,
-        message: error.message,
-        severity: 'error'
-      })
-    } finally {
-      setLoading(false)
+    if (scheduleId && name) {
+      navigate(`/schedule/${scheduleId}?name=${encodeURIComponent(name)}`)
     }
   }
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center' }}>
-      <Stack spacing={4}>
-        <Box>
-          <Typography variant="h3" component="h1" gutterBottom>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        px: 2,
+      }}
+    >
+      <Card
+        sx={{
+          width: '100%',
+          maxWidth: 400,
+          background: theme.palette.background.paper,
+          borderRadius: 3,
+          overflow: 'hidden',
+        }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{
+              mb: 4,
+              fontWeight: 600,
+              background: theme.palette.mode === 'dark'
+                ? 'linear-gradient(45deg, #90caf9 30%, #64b5f6 90%)'
+                : 'linear-gradient(45deg, #2196f3 30%, #1976d2 90%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Easy Schedule
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Join a schedule or create your own
-          </Typography>
-        </Box>
 
-        <Box component="form" onSubmit={handleSubmit}>
-          <Stack spacing={3}>
-            <TextField
-              required
-              label="Enter PIN"
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              inputProps={{
-                maxLength: 4,
-                pattern: '[0-9]*'
-              }}
-              fullWidth
-            />
-
-            <TextField
-              required
-              label="Your Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={loading}
-              fullWidth
-            >
-              {loading ? 'Joining...' : 'Join Schedule'}
-            </Button>
-          </Stack>
-        </Box>
-
-        <Typography variant="body1">
-          Want to create a new schedule?{' '}
-          <Link
-            component="button"
-            variant="body1"
-            onClick={() => navigate('/create')}
-          >
-            Create Schedule
-          </Link>
-        </Typography>
-      </Stack>
-
-      <Snackbar
-        open={toast.open}
-        autoHideDuration={6000}
-        onClose={() => setToast({ ...toast, open: false })}
-      >
-        <Alert severity={toast.severity} sx={{ width: '100%' }}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
+          {!showJoinForm ? (
+            <Stack spacing={2}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<CreateIcon />}
+                onClick={handleCreateClick}
+                fullWidth
+                sx={{
+                  py: 2,
+                  fontSize: '1.1rem',
+                  borderRadius: 2,
+                }}
+              >
+                Create New Schedule
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<JoinIcon />}
+                onClick={handleJoinClick}
+                fullWidth
+                sx={{
+                  py: 2,
+                  fontSize: '1.1rem',
+                  borderRadius: 2,
+                }}
+              >
+                Join Existing Schedule
+              </Button>
+            </Stack>
+          ) : (
+            <Fade in={showJoinForm}>
+              <form onSubmit={handleSubmit}>
+                <Stack spacing={3}>
+                  <TextField
+                    label="Your Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    fullWidth
+                    variant="outlined"
+                    autoFocus
+                  />
+                  <TextField
+                    label="Schedule ID"
+                    value={scheduleId}
+                    onChange={(e) => setScheduleId(e.target.value)}
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    disabled={!name || !scheduleId}
+                    sx={{
+                      py: 2,
+                      fontSize: '1.1rem',
+                      borderRadius: 2,
+                    }}
+                  >
+                    Join Schedule
+                  </Button>
+                  <Button
+                    variant="text"
+                    onClick={() => setShowJoinForm(false)}
+                    sx={{ mt: 1 }}
+                  >
+                    Back to Options
+                  </Button>
+                </Stack>
+              </form>
+            </Fade>
+          )}
+        </CardContent>
+      </Card>
     </Box>
   )
 }
